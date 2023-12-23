@@ -1,4 +1,5 @@
 import { CheckService } from "../domain/use-cases/checks/check-service"
+import { SendEmialLogs } from "../domain/use-cases/email/send-email-logs"
 import { FileSystemDataSource } from "../infrastructure/datasources/file-system.datasource"
 import { LogRepositoryImpl } from "../infrastructure/repositories/log.repository.impl"
 import { CronService } from "./cron/cron-service"
@@ -9,15 +10,24 @@ const fileSystemlogRepository = new LogRepositoryImpl(
     new FileSystemDataSource()
 )
 
+const emailService = new EmailService()
 
 export class Server {
     public static start(){
         console.log('Server started... 🟢')
         // Mandar email
-        const emailService = new EmailService()        
-        emailService.sendEmailWithFileSystemLogs(
-            ['matias98cs@gmail.com']
-        )
+        // new SendEmialLogs(
+        //     emailService,
+        //     fileSystemlogRepository
+        // ).execute(
+        //     ['matias98cs@gmail.com']
+        // )
+        // const emailService = new EmailService(
+        //     // fileSystemlogRepository
+        // )        
+        // emailService.sendEmailWithFileSystemLogs(
+        //     ['matias98cs@gmail.com']
+        // )
         // emailService.sendEmail({
         //     to: 'matias98cs@gmail.com',
         //     subject: "Logs de sistema",
