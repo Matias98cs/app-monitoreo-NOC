@@ -1,20 +1,26 @@
+import { LogSeverityLevel } from "../domain/entities/log.entity"
 import { CheckService } from "../domain/use-cases/checks/check-service"
 import { SendEmialLogs } from "../domain/use-cases/email/send-email-logs"
 import { FileSystemDataSource } from "../infrastructure/datasources/file-system.datasource"
+import { MongoLogDataSource } from "../infrastructure/datasources/mong-log-datasource"
 import { LogRepositoryImpl } from "../infrastructure/repositories/log.repository.impl"
 import { CronService } from "./cron/cron-service"
 import { EmailService } from "./email/email.service"
 
 
-const fileSystemlogRepository = new LogRepositoryImpl(
+const logRepository = new LogRepositoryImpl(
     new FileSystemDataSource()
+    // new MongoLogDataSource()
 )
 
 const emailService = new EmailService()
 
 export class Server {
-    public static start(){
+    public static async start(){
         console.log('Server started... 🟢')
+
+        const logs = await logRepository.getLogs(LogSeverityLevel.low)
+        console.log(logs)
         // Mandar email
         // new SendEmialLogs(
         //     emailService,
@@ -36,12 +42,12 @@ export class Server {
         //         <p>Ver logs adjuntos</p>
         //     `
         // })
-        // CronService.cerateJob('*/2 * * * * *',
+        // CronService.cerateJob('*/8 * * * * *',
         // () => {
-        //     const url = 'https://google.com'
+        //     const url = 'https://google.c'
         //     // const url = 'http://localhost:3000/posts'
         //     new CheckService(
-        //         fileSystemlogRepository,
+        //         logRepository,
         //         () => console.log(`${url} is OK`),
         //         (error) => console.log(error)
         //     ).execute(url)
